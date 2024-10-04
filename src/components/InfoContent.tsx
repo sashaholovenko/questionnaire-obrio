@@ -1,4 +1,7 @@
-const InfoContent = ({ question, onNext }) => (
+import {Question} from "@/pages/question/[questionnaire]/[id]";
+import {memo} from "react";
+
+const InfoContent = ({ question, onNext }: {question: Question, onNext: () => void}) => (
     <div className="text-center">
         <h1 className="text-2xl font-bold text-white">{question.title}</h1>
         <p className="text-lg">{question.description}</p>
@@ -8,4 +11,4 @@ const InfoContent = ({ question, onNext }) => (
     </div>
 );
 
-export default InfoContent;
+export default memo(InfoContent);

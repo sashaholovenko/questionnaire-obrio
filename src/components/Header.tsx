@@ -1,6 +1,7 @@
 import Image from "next/image";
+import {memo} from "react";
 
-const Header = ({ onBack }) => (
+const Header = ({ onBack }: {onBack: () => void}) => (
     <header className="flex justify-between items-center p-4">
         <Image src='/main-logo.svg' alt='logo' width={15} height={15}/>
         <button onClick={onBack} className="absolute left-10">
@@ -9,4 +10,4 @@ const Header = ({ onBack }) => (
     </header>
 );
 
-export default Header
+export default memo(Header)

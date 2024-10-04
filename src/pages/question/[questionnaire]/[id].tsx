@@ -12,13 +12,15 @@ import InfoContent from "@/components/InfoContent";
 import Header from "@/components/Header";
 
 
-interface Question {
+export interface Question {
     id: string;
     question: string;
     options: string[];
     next: Record<string, string>;
     screenType: string;
     referenceId?: string;
+    title?: string;
+    description?: string;
 }
 
 interface Props {
@@ -112,7 +114,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const { questionnaire, id } = params as { questionnaire: string; id: string }; // Destructure parameters
-    const filePath = path.join(process.cwd(), 'public/data/questionnaires', `${questionnaire}.json`); // Construct the file path for the questionnaire
+    const filePath = path.join(process.cwd(), 'public/data/questionnaires', `${questionnaire}.json`);
     console.log(questionnaire)
     const jsonData = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(jsonData);
