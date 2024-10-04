@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {
+      "id": "chooseGender",
+      "question": "Please choose your gender:",
+      "options": ["Male", "Female", "Other"],
+      "next": {
+        "Male": "chooseRelationshipStatus",
+        "Female": "chooseRelationshipStatus",
+        "Other": "chooseRelationshipStatus"
+      }
+    },
+    {
+      "id": "chooseRelationshipStatus",
+      "question": "What is your relationship status?",
+      "options": ["Single", "In a relationship", "Married"],
+      "next": {
+        "Single": "results",
+        "In a relationship": "results",
+        "Married": "results"
+      }
+    }
+  ]
+}
