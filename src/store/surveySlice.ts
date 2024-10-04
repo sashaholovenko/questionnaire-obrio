@@ -1,12 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface SurveyState {
-    answers: Record<string, any>;
+    answers: Record<string, string>;
 }
 
 const initialState: SurveyState = {
     answers: {
-        name: 'Sasha'
     },
 };
 
@@ -14,7 +13,7 @@ const surveySlice = createSlice({
     name: 'survey',
     initialState,
     reducers: {
-        setAnswer: (state, action: PayloadAction<{ questionId: string; answer: any }>) => {
+        setAnswer: (state, action: PayloadAction<{ questionId: string; answer: string }>) => {
             state.answers[action.payload.questionId] = action.payload.answer;
         },
         clearAnswers: (state) => {

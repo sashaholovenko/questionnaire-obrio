@@ -25,50 +25,56 @@ interface Props {
     question: Question;
 }
 
+type ScreenType = 'options' | 'info'
+
 const QuestionPage = ({ question }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
+    const { questionnaire } = router.query;
     const answers = useSelector((state: RootState) => state.survey.answers);
 
     const handleOptionClick = useCallback((option: string) => {
         dispatch(setAnswer({ questionId: question.id, answer: option }));
         const nextQuestionId = question.next.default || question.next[option];
+
         if (nextQuestionId) {
-            router.push(`/question/${nextQuestionId}`);
+            router.push(`/question/${questionnaire}/${nextQuestionId}`);
         } else {
             router.push('/final');
         }
-    }, [router, question, dispatch])
+    }, [router, question, dispatch, questionnaire]);
 
     const handleInfoClick = useCallback(() => {
-        const referenceAnswer = answers[question.referenceId]
-        const nextQuestionId = question.next[referenceAnswer]
+        const referenceAnswer = answers[question.referenceId!];
+
+        const nextQuestionId = question.next[referenceAnswer];
 
         if (nextQuestionId) {
-            router.push(`/question/${nextQuestionId}`);
+            router.push(`/question/${questionnaire}/${nextQuestionId}`);
         } else {
             router.push('/final');
         }
-    }, [answers, question, router])
+    }, [answers, question, router, questionnaire]);
+
 
     const replaceDynamicValues = useCallback((text: string) => {
         const replacedText = text.replace(/{([^{}]+)(?:\s\{([^}]+)\["([^}]+)"\])?}/g, (_, key, conditionKey, conditionValue) => {
             if (conditionKey && conditionValue) {
-                return answers[conditionKey] === conditionValue ? key : '';  // Return the key (main text) if condition is true
+                return answers[conditionKey] === conditionValue ? key : '';
             }
 
-            return answers[key] || `{${key}}`;  // Return the value from 'answers' or keep placeholder if missing
+            return answers[key] || `{${key}}`;
         });
 
         return replacedText;
     }, [answers])
 
-    const renderOptions = {
+    const renderOptions: Record<ScreenType, JSX.Element> = {
         options: <QuestionContent question={question} onOptionClick={handleOptionClick} replaceDynamicValues={replaceDynamicValues}/>,
         info: <InfoContent question={question} onNext={handleInfoClick} />,
     }
 
-    const colorScheme = {
+    const colorScheme: Record<string, string> = {
         info: 'linear-gradient(165.54deg, #141333 -33.39%, #202261 15.89%, #543C97 55.84%, #6939A2 74.96%)',
         options: '#FFF0F0',
     }
@@ -77,31 +83,47 @@ const QuestionPage = ({ question }: Props) => {
         <div className="flex flex-col items-center p-6 w-full h-full overflow-auto" style={{background: colorScheme[question.screenType]}}>
             <Header onBack={() => router.back()} />
             <div className="w-[330px] xs:w-full">
-                {renderOptions[question.screenType]}
+                {renderOptions[question.screenType as ScreenType]}
             </div>
         </div>
     );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const filePath = path.join(process.cwd(), 'public/data', 'questionary.json'); // Adjust the path as necessary
-    const jsonData = fs.readFileSync(filePath, 'utf8');
-    const data = JSON.parse(jsonData);
+    const questionnairesDir = path.join(process.cwd(), 'public/data/questionnaires');
+    const files = fs.readdirSync(questionnairesDir);
 
+    const paths = files.flatMap(file => {
+        const filePath = path.join(questionnairesDir, file);
+        const jsonData = fs.readFileSync(filePath, 'utf8');
+        const data = JSON.parse(jsonData); 
 
-    const paths = data.questions.map((question: Question) => ({
-        params: { id: question.id },
-    }));
+        return data.questions.map((question: Question) => ({
+            params: {
+                questionnaire: path.basename(file, '.json'),
+                id: question.id,
+            },
+        }));
+    });
 
     return { paths, fallback: false };
 };
 
+
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const filePath = path.join(process.cwd(), 'public/data', 'questionary.json'); // Adjust the path as necessary
+    const { questionnaire, id } = params as { questionnaire: string; id: string }; // Destructure parameters
+    const filePath = path.join(process.cwd(), 'public/data/questionnaires', `${questionnaire}.json`); // Construct the file path for the questionnaire
+    console.log(questionnaire)
     const jsonData = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(jsonData);
 
-    const question = data.questions.find((q: Question) => q.id === params?.id) || null;
+    const question = data.questions.find((q: Question) => q.id === id) || null;
+
+    if (!question) {
+        return {
+            notFound: true,
+        };
+    }
 
     return {
         props: {
@@ -109,5 +131,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         },
     };
 };
+
 
 export default QuestionPage;
