@@ -1,40 +1,58 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Installation
+To set up the project locally, follow these steps:
 
-First, run the development server:
+1. Clone the repository:  
+   `git clone <repository-url>`  
+   `cd <project-folder>`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+2. Install dependencies:  
+   `npm install`
+
+3. Start the development server:  
+   `npm run dev`
+
+4. Open your browser and go to `http://localhost:3000`.
+
+## Usage
+The application reads JSON files located in the `public/data/questionnaires` directory. All paths and props are generated from these files using `getStaticPaths` and `getStaticProps`. Access the questionnaires using their name and ID in the following format:  
+`/question/[questionnaireId]/[id]`
+
+## JSON Structure
+Each JSON file should adhere to the following structure:
+
+```json
+{
+  "id": "chooseGender",
+  "question": "Select your gender:",
+  "options": [
+    "Male",
+    "Female"
+  ],
+  "screenType": "options",
+  "next": {
+    "Male": "chooseRelationshipStatus",
+    "Female": "chooseRelationshipStatus"
+  }
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Explanation
+1. id: Used for routing.
+2. question: The question text displayed on the page.
+3. options: Possible answers for the question.
+4. screenType: Defines the type of page (currently supports "info" and "questions").
+5. next: Routes for the next page based on the selected answer.
+6. referencId: ID of the previous answer for "info" pages.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Conditional Text
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Conditional Text
+You can insert dynamic values based on previous answers using the syntax `{someValue}` in your text. This will be replaced with the corresponding property from the answers store.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+For conditional text, use the format:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+css
+Копіювати код
+`{that have children's (haveChildrens["Yes"])}`
+This structure means that the phrase `that have children's` will only be displayed if the `haveChildrens` question was answered with `Yes.`
