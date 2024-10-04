@@ -9,7 +9,7 @@ const Final = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/data/questionnaires/questionary1.json'); // Adjust the path if necessary
+                const response = await fetch('/data/questionnaires/questionary1.json');
                 const jsonData = await response.json();
 
                 const result = jsonData.questions.reduce((accumulator: Record<string, string>, current: Record<string, string>) => {

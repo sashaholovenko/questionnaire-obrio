@@ -115,7 +115,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const { questionnaire, id } = params as { questionnaire: string; id: string }; // Destructure parameters
     const filePath = path.join(process.cwd(), 'public/data/questionnaires', `${questionnaire}.json`);
-    console.log(questionnaire)
     const jsonData = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(jsonData);
 
