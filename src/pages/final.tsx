@@ -5,11 +5,12 @@ import {RootState} from "@/store/store";
 const Final = () => {
     const [questionsData, setQuestionsData] = useState<Record<string, string>>()
     const answers = useSelector((state: RootState) => state.survey.answers);
+    const questionary = useSelector((state: RootState) => state.survey.questionary);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/data/questionnaires/questionary1.json');
+                const response = await fetch(`/data/questionnaires/${questionary}.json`);
                 const jsonData = await response.json();
 
                 const result = jsonData.questions.reduce((accumulator: Record<string, string>, current: Record<string, string>) => {
@@ -25,7 +26,8 @@ const Final = () => {
         };
 
         fetchData();
-    }, []);
+    }, [questionary]);
+
     return (
         <div className="flex flex-col items-center justify-center w-full h-full" style={{ backgroundColor: '#FFF0F0'}}>
             <h1 className="text-black text-2xl font-bold">Questionary end</h1>
