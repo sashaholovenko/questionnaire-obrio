@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/store";
 
-const Final = () => {
+const FinalPage = () => {
     const [questionsData, setQuestionsData] = useState<Record<string, string>>()
     const answers = useSelector((state: RootState) => state.survey.answers);
     const questionary = useSelector((state: RootState) => state.survey.questionary);
@@ -42,4 +42,4 @@ const Final = () => {
     );
 };
 
-export default Final;
+export default FinalPage;
